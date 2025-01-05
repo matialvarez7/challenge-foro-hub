@@ -1,10 +1,12 @@
 package com.github.matialvarez7.foro_hub.controller;
 
 import com.github.matialvarez7.foro_hub.domain.topico.*;
+import com.github.matialvarez7.foro_hub.domain.usuario.Usuario;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,8 @@ public class TopicoController {
     @Transactional
     public ResponseEntity<RegistroTopicoResponse> registrarTopico(@RequestBody @Valid RegistroTopicoRequest datos) {
         System.out.println(datos);
-        RegistroTopicoResponse response = topicoService.registrarTopico(datos);
+        Usuario usuarioAutenticado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        RegistroTopicoResponse response = topicoService.registrarTopico(datos, usuarioAutenticado);
         return ResponseEntity.ok(response);
     }
 
@@ -40,14 +43,16 @@ public class TopicoController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<ModificacionTopicoResponse> modificarTopico(@PathVariable Long id, @RequestBody ModificacionTopicoRequest datosModificacion) {
-        ModificacionTopicoResponse response = topicoService.actualizarTopico(id, datosModificacion);
+        Usuario usuarioAutenticado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ModificacionTopicoResponse response = topicoService.actualizarTopico(id, datosModificacion, usuarioAutenticado);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity eliminarTopico(@PathVariable Long id) {
-        topicoService.eliminarTopico(id);
+        Usuario usuarioAutenticado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        topicoService.eliminarTopico(id, usuarioAutenticado);
         return ResponseEntity.ok().build();
     }
 }

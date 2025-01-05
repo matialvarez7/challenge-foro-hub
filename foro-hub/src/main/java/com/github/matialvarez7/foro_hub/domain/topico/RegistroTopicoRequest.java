@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record RegistroTopicoRequest(
-        @NotNull
-        Long idUsuario,
         @NotBlank
         String mensaje,
         @NotBlank
