@@ -1,5 +1,6 @@
 package com.github.matialvarez7.foro_hub.domain.usuario;
 
+import com.github.matialvarez7.foro_hub.domain.respuesta.Respuesta;
 import com.github.matialvarez7.foro_hub.domain.topico.Topico;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,8 @@ public class Usuario implements UserDetails {
     private String clave;
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Topico> topicosCreados;
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Respuesta> respuestas;
 
     public Usuario() {}
 

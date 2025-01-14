@@ -1,11 +1,14 @@
 package com.github.matialvarez7.foro_hub.domain.topico;
 
 import com.github.matialvarez7.foro_hub.domain.curso.Curso;
+import com.github.matialvarez7.foro_hub.domain.respuesta.Respuesta;
 import com.github.matialvarez7.foro_hub.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "Topico")
 @Table(name = "topicos")
@@ -30,6 +33,8 @@ public class Topico {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curso_id")
     private Curso curso;
+    @OneToMany(mappedBy = "topico", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Respuesta> respuestas;
 
     public Topico(){}
 
@@ -41,6 +46,7 @@ public class Topico {
         this.estado = Estado.ABIERTO;
         this.autor = autor;
         this.curso = curso;
+        this.respuestas = new ArrayList<>();
     }
 
     public void actualizarTopico(ModificacionTopicoRequest datosModificacion) {
