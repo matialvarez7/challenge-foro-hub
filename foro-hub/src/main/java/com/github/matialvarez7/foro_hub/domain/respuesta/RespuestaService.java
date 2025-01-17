@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RespuestaService {
@@ -28,11 +30,18 @@ public class RespuestaService {
         }
 
         if (topicoBuscado.get().getEstado().equals(Estado.CERRADO)) {
-            throw new ValidacionException("No es posible generar una respuesta para este topico");
+            throw new ValidacionException("No es posible generar una respuesta para este topico. El tópico está cerrado.");
         }
 
         Respuesta nuevaRespuesta = new Respuesta(respuesta, topicoBuscado.get(), usuarioAutenticado);
         respuestaRepository.save(nuevaRespuesta);
         return new RegistroRespuestaResponse(nuevaRespuesta);
+    }
+
+    public List<DatosRespuestaResponse> obtenerRespuestas(Long id) {
+        List<Respuesta> respuestas = respuestaRepository.findByAutorId(id);
+        return respuestas.stream()
+                .map(r -> new DatosRespuestaResponse(r.getTopico().getTitulo(), r.getAutor().getNombre(), r.getMensaje()))
+                .collect(Collectors.toList());
     }
 }

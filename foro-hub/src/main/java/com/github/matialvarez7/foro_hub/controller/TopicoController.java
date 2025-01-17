@@ -1,6 +1,7 @@
 package com.github.matialvarez7.foro_hub.controller;
 
 import com.github.matialvarez7.foro_hub.domain.topico.*;
+import com.github.matialvarez7.foro_hub.domain.usuario.AutenticacionUsuarioService;
 import com.github.matialvarez7.foro_hub.domain.usuario.Usuario;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,12 +19,14 @@ public class TopicoController {
 
     @Autowired
     private TopicoService topicoService;
+    @Autowired
+    AutenticacionUsuarioService autenticacionUsuarioService;
 
     @PostMapping
     @Transactional
     public ResponseEntity<RegistroTopicoResponse> registrarTopico(@RequestBody @Valid RegistroTopicoRequest datos) {
         System.out.println(datos);
-        Usuario usuarioAutenticado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Usuario usuarioAutenticado = autenticacionUsuarioService.obtenerUsuarioAutenticado();
         RegistroTopicoResponse response = topicoService.registrarTopico(datos, usuarioAutenticado);
         return ResponseEntity.ok(response);
     }
@@ -43,7 +46,7 @@ public class TopicoController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<ModificacionTopicoResponse> modificarTopico(@PathVariable Long id, @RequestBody ModificacionTopicoRequest datosModificacion) {
-        Usuario usuarioAutenticado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Usuario usuarioAutenticado = autenticacionUsuarioService.obtenerUsuarioAutenticado();
         ModificacionTopicoResponse response = topicoService.actualizarTopico(id, datosModificacion, usuarioAutenticado);
         return ResponseEntity.ok(response);
     }
@@ -51,7 +54,7 @@ public class TopicoController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity eliminarTopico(@PathVariable Long id) {
-        Usuario usuarioAutenticado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Usuario usuarioAutenticado = autenticacionUsuarioService.obtenerUsuarioAutenticado();
         topicoService.eliminarTopico(id, usuarioAutenticado);
         return ResponseEntity.ok().build();
     }
